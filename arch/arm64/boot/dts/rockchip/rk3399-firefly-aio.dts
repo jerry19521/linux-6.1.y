@@ -36,6 +36,7 @@
  *     OTHER DEALINGS IN THE SOFTWARE.
  */
 
+
 /dts-v1/;
 
 #include "rk3399-firefly.dtsi"
@@ -112,46 +113,30 @@
 		regulator-name = "dvdd_1v2";
 		status = "disabled";
 	};
-};
 
-
-&ov13850 {
-	status = "disabled";
-	reg = <0x36>;
-
-	/* conflict with csi-ctl-gpios */
-	reset-gpios = <&gpio0 8 GPIO_ACTIVE_HIGH>;	/*GPIO0_B0 MIP_RST*/
-	pwdn-gpios = <&gpio2 1 GPIO_ACTIVE_HIGH>;	/*GPIO2_A1  DVP_PDN1_H*/
-
-	avdd-supply = <&vcc_mipi>; /* GPIO1_C6 CIF_PWR  AGND*/
-	dovdd-supply = <&vcc_mipi>; /* GPIO1_C6 CIF_PWR  AGND */
-	dvdd-supply = <&dvdd_1v2>; /* GPIO1_C7 DVP_PWR DVDD_1V2 */
-
-	port {
-		ucam_out0: endpoint {
-			remote-endpoint = <&mipi_in_ucam0>;
-			data-lanes = <1 2>;
-		};
+	hdmi_dp_sound: hdmi-dp-sound {
+		status = "okay";
+		compatible = "rockchip,rk3399-hdmi-dp";
+		rockchip,cpu = <&i2s2>;
+		rockchip,codec = <&hdmi>, <&cdn_dp>;
 	};
-};
 
-&ov13850_1 {
-	status = "disabled";
-	reg = <0x46>;
+	vcc3v3_3g: vcc3v3-3g-regulator {
+		compatible = "regulator-fixed";
+		enable-active-high;
+		gpio = <&gpio0 2 GPIO_ACTIVE_HIGH>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&pcie_3g_drv>;
+		regulator-name = "vcc3v3_3g";
+		regulator-always-on;
+		regulator-boot-on;
+	};
 
-	/* conflict with csi-ctl-gpios */
-	reset-gpios = <&gpio0 8 GPIO_ACTIVE_HIGH>; /*GPIO0_B0 MIP_RST*/
-	pwdn-gpios = <&gpio2 8 GPIO_ACTIVE_HIGH>;	/*GPIO2_B0 DVP_PDN0*/
-
-	avdd-supply = <&vcc_mipi>; /* VCC28_MIPI */
-	dovdd-supply = <&vcc_mipi>; /* VCC18_MIPI */
-	dvdd-supply = <&dvdd_1v2>; /* DVDD_1V2 */
-
-	port {
-		ucam_out1: endpoint {
-			remote-endpoint = <&mipi_in_ucam1>;
-			data-lanes = <1 2>;
-		};
+	wdt: watchdog@ff848000 {
+		compatible = "snps,dw-wdt";
+		reg = <0x0 0xff848000 0x0 0x100>;
+		clocks = <&cru PCLK_WDT>;
+		interrupts = <GIC_SPI 120 IRQ_TYPE_LEVEL_HIGH 0>;
 	};
 };
 
@@ -204,31 +189,11 @@
 	status = "okay";
 };
 
-&ov13850 {
-	status = "okay";
-};
-
-&ov13850_1 {
-	status = "okay";
-};
-
-&rkisp1_0 {
-	status = "okay";
-};
-
 &mipi_dphy_rx0 {
 	status = "okay";
 };
 
 &isp0_mmu {
-	status = "okay";
-};
-
-&rkisp1_1 {
-	status = "okay";
-};
-
-&mipi_dphy_tx1rx1 {
 	status = "okay";
 };
 
@@ -261,10 +226,22 @@
 
 &spi1 {
     status = "okay";
-};
+	max-freq = <48000000>;
 
-&spi_wk2xxx {
-    status = "okay";
+	spi_wk2xxx: spi_wk2xxx@00{
+		status = "okay";
+		compatible = "firefly,spi-wk2xxx";
+		reg = <0x00>;
+		spi-max-frequency = <10000000>;
+        power-gpio = <&gpio2 4 GPIO_ACTIVE_HIGH>;
+        reset-gpio = <&gpio1 17 GPIO_ACTIVE_HIGH>;
+        irq-gpio = <&gpio1 2 IRQ_TYPE_EDGE_FALLING>;
+        cs-gpio = <&gpio1 10 GPIO_ACTIVE_HIGH>;
+		/* wk2xxx driver support SPI_CPOL | SPI_CPHA | SPI_CS_HIGH */
+		//spi-cpha;		/* SPI mode: CPHA=1 */
+		//spi-cpol;   	/* SPI mode: CPOL=1 */
+		//spi-cs-high;
+	};
 };
 
 &fusb0 {
