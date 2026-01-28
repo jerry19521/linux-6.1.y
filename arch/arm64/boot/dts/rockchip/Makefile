@@ -37,6 +37,7 @@ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-evb.dtb
 dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-ficus.dtb
 dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-fine3399.dtb
 dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-firefly.dtb
+dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-firefly-aio.dtb
 dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-fmx1-pro.dtb
 dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-fmx1-pro-b.dtb
 dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3399-gru-bob.dtb
