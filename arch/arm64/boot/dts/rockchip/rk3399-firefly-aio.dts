@@ -333,4 +333,14 @@
 				<1 20 RK_FUNC_GPIO &pcfg_pull_none>;
 		};
 	};
+
+	cam0 {
+                cif_pwr: cif-pwr {
+                        rockchip,pins = <1 17 RK_FUNC_GPIO &pcfg_pull_down>;
+                };
+
+                dvp_pwr: dvp-pwr {
+                        rockchip,pins = <1 1 RK_FUNC_GPIO &pcfg_pull_down>;
+                };
+        };
 };
